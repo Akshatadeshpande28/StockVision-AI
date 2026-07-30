@@ -92,3 +92,31 @@ def get_stock_data(symbol: str, period: str = "1y"):
         return {
             "error": str(e)
         }
+    def get_multi_period_analysis(symbol: str):
+    """
+    Get stock analysis for 3 months, 6 months,
+    and 1 year in a single request.
+    """
+
+    periods = {
+        "3_months": "3mo",
+        "6_months": "6mo",
+        "1_year": "1y"
+    }
+
+    results = {}
+
+    for label, period in periods.items():
+        data = get_stock_data(symbol, period)
+
+        if "error" in data:
+            results[label] = {
+                "error": data["error"]
+            }
+        else:
+            results[label] = data["analysis"]
+
+    return {
+        "symbol": symbol.upper(),
+        "analysis": results
+    }
