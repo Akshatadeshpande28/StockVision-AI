@@ -19,7 +19,6 @@ def get_stock_data(symbol: str, period: str = "1y"):
 
     try:
         stock = yf.Ticker(symbol)
-
         history = stock.history(period=period)
 
         if history.empty:
@@ -29,10 +28,10 @@ def get_stock_data(symbol: str, period: str = "1y"):
 
         history = history.reset_index()
 
-        # Convert date to string for JSON
+        # Convert date to string for JSON response
         history["Date"] = history["Date"].astype(str)
 
-        # Price calculations
+        # Basic price analysis
         starting_price = float(history["Close"].iloc[0])
         current_price = float(history["Close"].iloc[-1])
 
@@ -51,16 +50,13 @@ def get_stock_data(symbol: str, period: str = "1y"):
         # Historical trend
         if percentage_change > 0:
             trend = "Upward"
-
         elif percentage_change < 0:
             trend = "Downward"
-
         else:
             trend = "Neutral"
 
         return {
             "symbol": symbol.upper(),
-
             "period": period,
 
             "analysis": {
@@ -88,14 +84,15 @@ def get_stock_data(symbol: str, period: str = "1y"):
         }
 
     except Exception as e:
-
         return {
             "error": str(e)
         }
-    def get_multi_period_analysis(symbol: str):
+
+
+def get_multi_period_analysis(symbol: str):
     """
-    Get stock analysis for 3 months, 6 months,
-    and 1 year in a single request.
+    Get 3-month, 6-month and 1-year
+    stock analysis in a single request.
     """
 
     periods = {
@@ -107,6 +104,7 @@ def get_stock_data(symbol: str, period: str = "1y"):
     results = {}
 
     for label, period in periods.items():
+
         data = get_stock_data(symbol, period)
 
         if "error" in data:
