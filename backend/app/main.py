@@ -1,8 +1,10 @@
 from fastapi import FastAPI
+
 from app.stock import (
     get_stock_data,
     get_multi_period_analysis,
-    get_technical_analysis
+    get_technical_analysis,
+    get_fundamental_analysis
 )
 
 
