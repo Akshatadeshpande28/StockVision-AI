@@ -1,5 +1,9 @@
 from fastapi import FastAPI
-from app.stock import get_stock_data, get_multi_period_analysis
+from app.stock import (
+    get_stock_data,
+    get_multi_period_analysis,
+    get_technical_analysis
+)
 
 
 app = FastAPI(
@@ -24,3 +28,7 @@ def stock_analysis(symbol: str, period: str = "1y"):
 @app.get("/analysis/{symbol}")
 def multi_period_analysis(symbol: str):
     return get_multi_period_analysis(symbol)
+
+@app.get("/technical/{symbol}")
+def technical_analysis(symbol: str):
+    return get_technical_analysis(symbol)
