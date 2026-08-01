@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-
+from app.charts import generate_candlestick
 from app.stock import (
     get_stock_data,
     get_multi_period_analysis,
@@ -34,3 +34,7 @@ def multi_period_analysis(symbol: str):
 @app.get("/technical/{symbol}")
 def technical_analysis(symbol: str):
     return get_technical_analysis(symbol)
+
+@app.get("/chart/{symbol}")
+def chart(symbol: str, period: str = "6mo"):
+    return generate_candlestick(symbol, period)
