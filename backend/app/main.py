@@ -1,5 +1,9 @@
 from fastapi import FastAPI
-
+from fastapi.middleware.cors import CORSMiddleware
+app = FastAPI(
+    title="StockVision AI",
+    version="1.0.0"
+)
 from app.stock import (
     get_stock_data,
     get_multi_period_analysis,
