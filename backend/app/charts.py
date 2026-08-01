@@ -1,7 +1,6 @@
 import yfinance as yf
 import plotly.graph_objects as go
 
-
 def generate_candlestick(symbol: str, period: str = "6mo"):
 
     stock = yf.Ticker(symbol)

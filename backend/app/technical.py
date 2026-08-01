@@ -1,0 +1,1 @@
+get_technical_analysis,
