@@ -1,3 +1,4 @@
+import yfinance as yf
 def get_fundamental_analysis(symbol: str):
     """
     Fetch fundamental company data and cash-flow metrics.
