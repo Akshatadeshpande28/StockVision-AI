@@ -18,3 +18,34 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+@app.get("/")
+def home():
+    return {
+        "message": "Welcome to StockVision AI 🚀",
+        "status": "Backend Running"
+    }
+
+
+@app.get("/stock/{symbol}")
+def stock_analysis(symbol: str, period: str = "1y"):
+    return get_stock_data(symbol, period)
+
+
+@app.get("/analysis/{symbol}")
+def analysis(symbol: str):
+    return get_multi_period_analysis(symbol)
+
+
+@app.get("/technical/{symbol}")
+def technical(symbol: str):
+    return get_technical_analysis(symbol)
+
+
+@app.get("/fundamentals/{symbol}")
+def fundamentals(symbol: str):
+    return get_fundamental_analysis(symbol)
+
+
+@app.get("/chart/{symbol}")
+def chart(symbol: str, period: str = "6mo"):
+    return generate_candlestick(symbol, period)
