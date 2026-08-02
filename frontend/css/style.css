@@ -1,11 +1,27 @@
 body{
-    background:#f8f9fa;
+    background:#f4f7fb;
+    font-family:Arial, Helvetica, sans-serif;
 }
 
 h1{
-    font-weight:bold;
+    font-weight:700;
+    color:#1e293b;
 }
 
 .card{
-    border-radius:12px;
+    border:none;
+    border-radius:15px;
+    transition:0.3s;
+}
+
+.card:hover{
+    transform:translateY(-5px);
+}
+
+h4{
+    color:#2563eb;
+}
+
+#chart{
+    min-height:600px;
 }

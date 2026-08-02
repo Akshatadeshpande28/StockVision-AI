@@ -1,39 +1,36 @@
 const API = "https://special-halibut-4jwvvq9q9pqv25rg5-8000.app.github.dev"
 
-async function analyzeStock() {
+function displaySummary(data) {
 
-    const symbol = document.getElementById("symbol").value.trim();
+   document.getElementById("summary").innerHTML = `
+<div class="text-center mt-4">
+    <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Loading...</span>
+    </div>
+    <p class="mt-2">Loading Stock Data...</p>
+</div>
 
-    if (!symbol) {
-        alert("Please enter a stock symbol.");
-        return;
-    }
 
-    document.getElementById("summary").innerHTML =
-        "<h4>Loading...</h4>";
+    <div class="col-md-3">
+        <div class="card shadow text-center p-3">
+            <h6>Current Price</h6>
+            <h4>₹${data.current_price ?? "-"}</h4>
+        </div>
+    </div>
 
-    try {
+    <div class="col-md-3">
+        <div class="card shadow text-center p-3">
+            <h6>Recommendation</h6>
+            <h4>${data.recommendation ?? "-"}</h4>
+        </div>
+    </div>
 
-        const summaryRes = await fetch(`${API}/analysis/${symbol}`);
-        const technicalRes = await fetch(`${API}/technical/${symbol}`);
-        const fundamentalRes = await fetch(`${API}/fundamentals/${symbol}`);
-        const chartRes = await fetch(`${API}/chart/${symbol}`);
+    <div class="col-md-3">
+        <div class="card shadow text-center p-3">
+            <h6>Trend</h6>
+            <h4>${data.trend ?? "-"}</h4>
+        </div>
+    </div>
 
-        const summary = await summaryRes.json();
-        const technical = await technicalRes.json();
-        const fundamental = await fundamentalRes.json();
-        const chart = await chartRes.json();
-
-        displaySummary(summary);
-        displayTechnical(technical);
-        displayFundamental(fundamental);
-        displayChart(chart);
-
-    } catch (err) {
-
-        document.getElementById("summary").innerHTML =
-            `<div class="alert alert-danger">${err}</div>`;
-
-    }
-
+    `;
 }
