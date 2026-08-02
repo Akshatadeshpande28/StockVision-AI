@@ -1,43 +1,38 @@
+const API = "https://special-halibut-4jwvvq9q9pqv25rg5-8000.app.github.dev"
+
 async function analyzeStock() {
 
-    const symbol = document.getElementById("symbol").value;
+    const symbol = document.getElementById("symbol").value.trim();
 
     if (!symbol) {
-        alert("Please enter a stock symbol");
+        alert("Please enter a stock symbol.");
         return;
     }
 
-    const API = "http://127.0.0.1:8000";
+    document.getElementById("summary").innerHTML =
+        "<h4>Loading...</h4>";
 
     try {
 
-        const response = await fetch(`${API}/analysis/${symbol}`);
+        const summaryRes = await fetch(`${API}/analysis/${symbol}`);
+        const technicalRes = await fetch(`${API}/technical/${symbol}`);
+        const fundamentalRes = await fetch(`${API}/fundamentals/${symbol}`);
+        const chartRes = await fetch(`${API}/chart/${symbol}`);
 
-        const data = await response.json();
+        const summary = await summaryRes.json();
+        const technical = await technicalRes.json();
+        const fundamental = await fundamentalRes.json();
+        const chart = await chartRes.json();
 
-        document.getElementById("summary").innerHTML = `
-            <div class="card p-3 shadow">
+        displaySummary(summary);
+        displayTechnical(technical);
+        displayFundamental(fundamental);
+        displayChart(chart);
 
-                <h3>${data.symbol}</h3>
+    } catch (err) {
 
-                <p><b>Trend:</b> ${data.analysis.trend}</p>
-
-                <p><b>Current Price:</b> ₹${data.analysis.current_price}</p>
-
-                <p><b>Average Price:</b> ₹${data.analysis.average_price}</p>
-
-                <p><b>Price Change:</b> ${data.analysis.price_change}</p>
-
-            </div>
-        `;
-
-    }
-
-    catch(err){
-
-        console.log(err);
-
-        alert("Unable to connect to backend.");
+        document.getElementById("summary").innerHTML =
+            `<div class="alert alert-danger">${err}</div>`;
 
     }
 
