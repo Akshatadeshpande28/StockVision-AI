@@ -15,7 +15,7 @@ h1{
 }
 
 .card:hover{
-    transform:translateY(-5px);
+    transform:translateY(-4px);
 }
 
 h4{
@@ -23,5 +23,18 @@ h4{
 }
 
 #chart{
-    min-height:600px;
+    min-height:650px;
+}
+
+.table td{
+    font-weight:500;
+}
+
+.table th{
+    color:#555;
+}
+
+.spinner-border{
+    width:3rem;
+    height:3rem;
 }
