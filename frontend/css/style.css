@@ -1,40 +1,138 @@
 body{
-    background:#f4f7fb;
-    font-family:Arial, Helvetica, sans-serif;
+    background:#eef3f9;
+    font-family: "Segoe UI", sans-serif;
 }
 
 h1{
     font-weight:700;
-    color:#1e293b;
+    color:#0f172a;
 }
 
 .card{
+
     border:none;
-    border-radius:15px;
-    transition:0.3s;
+    border-radius:18px;
+
+    transition:0.3s ease;
+
+    box-shadow:0 10px 25px rgba(0,0,0,.08);
+
 }
 
 .card:hover{
-    transform:translateY(-4px);
+
+    transform:translateY(-6px);
+
 }
 
-h4{
+.metric-card{
+
+    text-align:center;
+
+    padding:20px;
+
+}
+
+.metric-title{
+
+    color:#64748b;
+
+    font-size:15px;
+
+    margin-bottom:10px;
+
+}
+
+.metric-value{
+
+    font-size:30px;
+
+    font-weight:700;
+
     color:#2563eb;
+
 }
 
-#chart{
-    min-height:650px;
+.section-card{
+
+    padding:25px;
+
+}
+
+.section-title{
+
+    font-size:22px;
+
+    font-weight:700;
+
+    margin-bottom:20px;
+
 }
 
 .table td{
-    font-weight:500;
+
+    padding:10px;
+
 }
 
 .table th{
+
+    width:50%;
+
     color:#555;
+
+}
+
+#chart{
+
+    min-height:650px;
+
+}
+
+.btn-primary{
+
+    border-radius:12px;
+
+    padding:12px;
+
+}
+
+.form-control{
+
+    border-radius:12px;
+
+    padding:12px;
+
 }
 
 .spinner-border{
+
     width:3rem;
+
     height:3rem;
+
+}
+
+.buy{
+
+    color:green;
+
+    font-weight:bold;
+
+}
+
+.sell{
+
+    color:red;
+
+    font-weight:bold;
+
+}
+
+.neutral{
+
+    color:orange;
+
+    font-weight:bold;
+
 }
