@@ -1,4 +1,4 @@
-const API = "https://special-halibut-4jwvvq9q9pqv25rg5-8000.app.github.dev/"
+const API = "https://special-halibut-4jwvvq9q9pqv25rg5-8000.app.github.dev"
 
 
 /* ================================
