@@ -1,9 +1,13 @@
-const API = "https://special-halibut-4jwvvq9q9pqv25rg5-8000.app.github.dev"
+const API = "https://special-halibut-4jwvvq9q9pqv25rg5-8000.app.github.dev/"
 
+
+/* ================================
+   Analyze Stock
+================================ */
 
 async function analyzeStock() {
 
-    const symbol = document.getElementById("symbol").value.trim();
+    const symbol = document.getElementById("symbol").value.trim().toUpperCase();
 
     if (!symbol) {
         alert("Please enter a stock symbol.");
@@ -11,10 +15,11 @@ async function analyzeStock() {
     }
 
     document.getElementById("summary").innerHTML = `
-    <div class="text-center mt-4">
-        <div class="spinner-border text-primary"></div>
-        <p class="mt-2">Loading Stock Data...</p>
-    </div>`;
+        <div class="text-center mt-5">
+            <div class="spinner-border text-primary"></div>
+            <p class="mt-3">Loading Stock Data...</p>
+        </div>
+    `;
 
     document.getElementById("technical").innerHTML = "";
     document.getElementById("fundamental").innerHTML = "";
@@ -22,175 +27,422 @@ async function analyzeStock() {
 
     try {
 
-        const [summaryRes, technicalRes, fundamentalRes, chartRes] =
-            await Promise.all([
-                fetch(`${API}/analysis/${symbol}`),
-                fetch(`${API}/technical/${symbol}`),
-                fetch(`${API}/fundamentals/${symbol}`),
-                fetch(`${API}/chart/${symbol}`)
-            ]);
+        const analysisResponse = await fetch(`${API}/analysis/${symbol}`);
+        const technicalResponse = await fetch(`${API}/technical/${symbol}`);
+        const fundamentalResponse = await fetch(`${API}/fundamentals/${symbol}`);
+        const chartResponse = await fetch(`${API}/chart/${symbol}`);
 
-        const summary = await summaryRes.json();
-        const technical = await technicalRes.json();
-        const fundamental = await fundamentalRes.json();
-        const chart = await chartRes.json();
+        if (
+            !analysisResponse.ok ||
+            !technicalResponse.ok ||
+            !fundamentalResponse.ok ||
+            !chartResponse.ok
+        ) {
+            throw new Error("Failed to fetch stock data.");
+        }
 
-        displaySummary(summary);
+        const analysis = await analysisResponse.json();
+        const technical = await technicalResponse.json();
+        const fundamental = await fundamentalResponse.json();
+        const chart = await chartResponse.json();
+
+        displaySummary(analysis);
         displayTechnical(technical);
         displayFundamental(fundamental);
         displayChart(chart);
 
-    } catch (err) {
+    }
+    catch (error) {
 
-        console.error(err);
+        console.error(error);
 
         document.getElementById("summary").innerHTML = `
-        <div class="alert alert-danger">
-            Unable to connect to backend.
-        </div>`;
+            <div class="alert alert-danger">
+                ${error.message}
+            </div>
+        `;
+
     }
+
 }
 
-function displaySummary(data) {
+/* ================================
+   Format Numbers
+================================ */
+
+function formatNumber(value){
+
+    if(value===null || value===undefined)
+        return "-";
+
+    return Number(value).toLocaleString("en-IN");
+
+}
+
+/* ================================
+   Summary Cards
+================================ */
+
+function displaySummary(data){
 
     const summary = data.analysis["3_months"];
 
     document.getElementById("summary").innerHTML = `
 
     <div class="col-md-3">
-        <div class="card shadow text-center p-3">
-            <h6>Stock</h6>
-            <h4>${data.symbol}</h4>
+
+        <div class="card metric-card">
+
+            <div class="metric-title">
+                Stock
+            </div>
+
+            <div class="metric-value">
+                ${data.symbol}
+            </div>
+
         </div>
+
     </div>
 
     <div class="col-md-3">
-        <div class="card shadow text-center p-3">
-            <h6>Current Price</h6>
-            <h4>₹${summary.current_price}</h4>
+
+        <div class="card metric-card">
+
+            <div class="metric-title">
+                Current Price
+            </div>
+
+            <div class="metric-value">
+                ₹${summary.current_price}
+            </div>
+
         </div>
+
     </div>
 
     <div class="col-md-3">
-        <div class="card shadow text-center p-3">
-            <h6>Trend</h6>
-            <h4>${summary.trend}</h4>
+
+        <div class="card metric-card">
+
+            <div class="metric-title">
+                Trend
+            </div>
+
+            <div class="metric-value">
+                ${summary.trend}
+            </div>
+
         </div>
+
     </div>
 
     <div class="col-md-3">
-        <div class="card shadow text-center p-3">
-            <h6>Price Change</h6>
-            <h4>${summary.percentage_change}%</h4>
+
+        <div class="card metric-card">
+
+            <div class="metric-title">
+                Change
+            </div>
+
+            <div class="metric-value">
+                ${summary.percentage_change}%
+            </div>
+
         </div>
+
     </div>
+
     `;
+
 }
+/* ================================
+   Technical Analysis
+================================ */
 
-function displayTechnical(data) {
+function displayTechnical(data){
 
-    const t = data.technical_analysis || data;
+    const t = data.technical_analysis;
 
     document.getElementById("technical").innerHTML = `
-    <div class="card shadow p-3">
 
-        <h4>Technical Analysis</h4>
+    <div class="card section-card">
 
-        <table class="table table-sm">
+        <h4 class="section-title">
+            📊 Technical Analysis
+        </h4>
+
+        <table class="table table-bordered">
 
             <tr>
                 <th>Current Price</th>
-                <td>${t.current_price ?? "-"}</td>
+                <td>₹${t.current_price}</td>
             </tr>
 
             <tr>
-                <th>RSI</th>
-                <td>${t.rsi_14 ?? "-"}</td>
+                <th>RSI (14)</th>
+                <td>${t.rsi_14}</td>
+            </tr>
+
+            <tr>
+                <th>RSI Signal</th>
+                <td>${t.rsi_signal}</td>
             </tr>
 
             <tr>
                 <th>MACD</th>
-                <td>${t.macd ?? "-"}</td>
+                <td>${t.macd}</td>
+            </tr>
+
+            <tr>
+                <th>MACD Signal</th>
+                <td>${t.macd_signal}</td>
             </tr>
 
             <tr>
                 <th>SMA 20</th>
-                <td>${t.sma_20 ?? "-"}</td>
+                <td>${t.sma_20}</td>
             </tr>
 
             <tr>
                 <th>SMA 50</th>
-                <td>${t.sma_50 ?? "-"}</td>
+                <td>${t.sma_50}</td>
             </tr>
 
             <tr>
-                <th>Signal</th>
-                <td>${t.technical_signal ?? t.rsi_signal ?? "-"}</td>
+                <th>SMA 200</th>
+                <td>${t.sma_200}</td>
+            </tr>
+
+            <tr>
+                <th>EMA 20</th>
+                <td>${t.ema_20}</td>
+            </tr>
+
+            <tr>
+                <th>EMA 50</th>
+                <td>${t.ema_50}</td>
+            </tr>
+
+            <tr>
+                <th>52 Week High</th>
+                <td>${t["52_week_high"]}</td>
+            </tr>
+
+            <tr>
+                <th>52 Week Low</th>
+                <td>${t["52_week_low"]}</td>
+            </tr>
+
+            <tr>
+                <th>Current Volume</th>
+                <td>${formatNumber(t.current_volume)}</td>
+            </tr>
+
+            <tr>
+                <th>Avg Volume (20)</th>
+                <td>${formatNumber(t.average_volume_20)}</td>
+            </tr>
+
+            <tr>
+                <th>Volume Signal</th>
+                <td>${t.volume_signal}</td>
+            </tr>
+
+            <tr>
+                <th>Volatility</th>
+                <td>${t.volatility_percent}%</td>
+            </tr>
+
+            <tr>
+                <th>Bullish Points</th>
+                <td>${t.bullish_points}</td>
+            </tr>
+
+            <tr>
+                <th>Bearish Points</th>
+                <td>${t.bearish_points}</td>
+            </tr>
+
+            <tr>
+
+                <th>Overall Signal</th>
+
+                <td class="${
+                    t.technical_signal === "Bullish"
+                    ? "buy"
+                    : t.technical_signal === "Bearish"
+                    ? "sell"
+                    : "neutral"
+                }">
+
+                    ${t.technical_signal}
+
+                </td>
+
             </tr>
 
         </table>
 
-    </div>`;
+    </div>
+
+    `;
+
 }
+/* ================================
+   Fundamental Analysis
+================================ */
 
-function displayFundamental(data) {
+function displayFundamental(data){
 
-    const f = data.fundamental_analysis || data;
+    const f = data.fundamental_analysis;
 
     document.getElementById("fundamental").innerHTML = `
 
-    <div class="card shadow p-3 mt-3">
+    <div class="card section-card">
 
-        <h4>Fundamental Analysis</h4>
+        <h4 class="section-title">
+            🏢 Fundamental Analysis
+        </h4>
 
-        <table class="table table-sm">
+        <table class="table table-bordered">
 
             <tr>
                 <th>Company</th>
-                <td>${f.company_name ?? "-"}</td>
+                <td>${f.company_name}</td>
             </tr>
 
             <tr>
                 <th>Sector</th>
-                <td>${f.sector ?? "-"}</td>
+                <td>${f.sector}</td>
+            </tr>
+
+            <tr>
+                <th>Industry</th>
+                <td>${f.industry}</td>
+            </tr>
+
+            <tr>
+                <th>Current Price</th>
+                <td>₹${f.current_price}</td>
             </tr>
 
             <tr>
                 <th>Market Cap</th>
-                <td>${f.market_cap ?? "-"}</td>
+                <td>${formatNumber(f.market_cap)}</td>
             </tr>
 
             <tr>
-                <th>P/E Ratio</th>
-                <td>${f.pe_ratio ?? "-"}</td>
+                <th>Enterprise Value</th>
+                <td>${formatNumber(f.enterprise_value)}</td>
             </tr>
 
             <tr>
-                <th>EPS</th>
-                <td>${f.eps ?? "-"}</td>
+                <th>Trailing PE</th>
+                <td>${f.trailing_pe ?? "-"}</td>
+            </tr>
+
+            <tr>
+                <th>Forward PE</th>
+                <td>${f.forward_pe ?? "-"}</td>
+            </tr>
+
+            <tr>
+                <th>Price to Book</th>
+                <td>${f.price_to_book ?? "-"}</td>
+            </tr>
+
+            <tr>
+                <th>Revenue</th>
+                <td>${formatNumber(f.revenue)}</td>
+            </tr>
+
+            <tr>
+                <th>Revenue Growth</th>
+                <td>${f.revenue_growth ?? "-"}%</td>
+            </tr>
+
+            <tr>
+                <th>Profit Margin</th>
+                <td>${f.profit_margin ?? "-"}</td>
+            </tr>
+
+            <tr>
+                <th>Operating Margin</th>
+                <td>${f.operating_margin ?? "-"}</td>
+            </tr>
+
+            <tr>
+                <th>Debt to Equity</th>
+                <td>${f.debt_to_equity ?? "-"}</td>
             </tr>
 
             <tr>
                 <th>Dividend Yield</th>
-                <td>${f.dividend_yield ?? "-"}</td>
+                <td>${f.dividend_yield ?? "-"}%</td>
+            </tr>
+
+            <tr>
+                <th>Beta</th>
+                <td>${f.beta ?? "-"}</td>
+            </tr>
+
+            <tr>
+                <th>52 Week High</th>
+                <td>${f["52_week_high"]}</td>
+            </tr>
+
+            <tr>
+                <th>52 Week Low</th>
+                <td>${f["52_week_low"]}</td>
             </tr>
 
         </table>
 
-    </div>`;
+    </div>
+
+    `;
+
 }
+/* ================================
+   Candlestick Chart
+================================ */
 
 function displayChart(chart) {
 
-    if (chart.chart) {
+    try {
 
-        document.getElementById("chart").innerHTML = chart.chart;
+        // If backend returns Plotly figure as a JSON string
+        if (typeof chart === "string") {
+            chart = JSON.parse(chart);
+        }
 
-    } else {
+        // If backend wraps the figure in a property
+        if (chart.chart) {
+            chart = typeof chart.chart === "string"
+                ? JSON.parse(chart.chart)
+                : chart.chart;
+        }
+
+        Plotly.newPlot(
+            "chart",
+            chart.data,
+            chart.layout,
+            {
+                responsive: true,
+                displayModeBar: true
+            }
+        );
+
+    } catch (error) {
+
+        console.error("Chart Error:", error);
 
         document.getElementById("chart").innerHTML = `
-        <div class="alert alert-warning">
-            Chart unavailable.
-        </div>`;
+            <div class="alert alert-warning">
+                Unable to display chart.
+            </div>
+        `;
     }
+
 }
