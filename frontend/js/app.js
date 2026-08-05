@@ -412,35 +412,26 @@ function displayChart(chart) {
 
     try {
 
-        // If backend returns Plotly figure as a JSON string
-        if (typeof chart === "string") {
-            chart = JSON.parse(chart);
-        }
-
-        // If backend wraps the figure in a property
-        if (chart.chart) {
-            chart = typeof chart.chart === "string"
-                ? JSON.parse(chart.chart)
-                : chart.chart;
-        }
+        // chart is returned as a JSON string
+        const figure = JSON.parse(chart);
 
         Plotly.newPlot(
             "chart",
-            chart.data,
-            chart.layout,
+            figure.data,
+            figure.layout,
             {
                 responsive: true,
-                displayModeBar: true
+                displayModeBar: false
             }
         );
 
     } catch (error) {
 
-        console.error("Chart Error:", error);
+        console.error(error);
 
         document.getElementById("chart").innerHTML = `
-            <div class="alert alert-warning">
-                Unable to display chart.
+            <div class="alert alert-danger">
+                Failed to load chart.
             </div>
         `;
     }
