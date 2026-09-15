@@ -422,6 +422,8 @@ async function loadChart(
             );
 
         }
+        // Clear the loading spinner before rendering the chart
+chart.innerHTML = "";
 
 
         // ========================================
