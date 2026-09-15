@@ -36,3 +36,7 @@ def stock(symbol: str, period: str = "1y"):
 @app.get("/analysis/{symbol}")
 def analysis(symbol: str):
     return get_multi_period_analysis(symbol)
+
+@app.get("/chart/{symbol}")
+def chart(symbol: str, period: str = "6mo"):
+    return get_chart_data(symbol, period)
