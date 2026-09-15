@@ -185,20 +185,16 @@ async function analyzeStock() {
 
 
         // ========================================
-        // Load Candlestick Chart
-        // ========================================
+// Show Results
+// ========================================
 
-        await loadChart(
-            symbol,
-            "6mo"
-        );
+results.classList.remove("d-none");
 
+// Hide the main loading spinner
+loading.classList.add("d-none");
 
-        // ========================================
-        // Show Results
-        // ========================================
-
-        results.classList.remove("d-none");
+// Load candlestick chart separately
+loadChart(symbol, "6mo");
 
     }
 
@@ -222,12 +218,11 @@ async function analyzeStock() {
 
     finally {
 
-        loading.classList.add("d-none");
+    loading.classList.add("d-none");
 
-        button.disabled = false;
+    button.disabled = false;
 
     }
-
 }
 
 
