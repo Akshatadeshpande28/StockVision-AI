@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.stock import get_stock_data, get_multi_period_analysis
-
+from app.charts import get_chart_data
 
 app = FastAPI(
     title="StockVision AI",
