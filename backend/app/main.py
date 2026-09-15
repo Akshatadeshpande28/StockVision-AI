@@ -3,7 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.stock import get_stock_data, get_multi_period_analysis
 from app.charts import get_chart_data
-
+from app.technical import get_technical_analysis
 app = FastAPI(
     title="StockVision AI",
     version="1.0.0"
@@ -40,3 +40,7 @@ def analysis(symbol: str):
 @app.get("/chart/{symbol}")
 def chart(symbol: str, period: str = "6mo"):
     return get_chart_data(symbol, period)
+
+@app.get("/technical/{symbol}")
+def technical(symbol: str, period: str = "1y"):
+    return get_technical_analysis(symbol, period)
