@@ -10,6 +10,7 @@ app = FastAPI(
 )
 
 
+# Allow frontend to communicate with backend
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -28,7 +29,7 @@ def home():
 
 
 @app.get("/stock/{symbol}")
-def stock_analysis(symbol: str, period: str = "1y"):
+def stock(symbol: str, period: str = "1y"):
     return get_stock_data(symbol, period)
 
 
