@@ -2,9 +2,8 @@
 // StockVision AI - Frontend JavaScript
 // ========================================
 
-// Backend API
-const API = "https://literate-journey-q7p44vgvg567h67vq-8000.app.github.dev";
-
+const API =
+    "https://literate-journey-q7p44vgvg567h67vq-8000.app.github.dev";
 
 // ========================================
 // Analyze Stock
@@ -12,28 +11,45 @@ const API = "https://literate-journey-q7p44vgvg567h67vq-8000.app.github.dev";
 
 async function analyzeStock() {
 
-    const symbolInput = document.getElementById("symbolInput");
-    const symbol = symbolInput.value.trim().toUpperCase();
+    const symbolInput =
+        document.getElementById("symbolInput");
 
-    const loading = document.getElementById("loading");
-    const results = document.getElementById("results");
-    const error = document.getElementById("error");
-    const button = document.getElementById("analyzeButton");
+    const symbol =
+        symbolInput.value.trim().toUpperCase();
 
-    // Check input
+
+    const loading =
+        document.getElementById("loading");
+
+    const results =
+        document.getElementById("results");
+
+    const error =
+        document.getElementById("error");
+
+    const button =
+        document.getElementById("analyzeButton");
+
+
+    // Validate input
+
     if (!symbol) {
 
-        error.textContent = "Please enter a stock symbol.";
+        error.textContent =
+            "Please enter a stock symbol.";
 
         error.classList.remove("d-none");
+
         results.classList.add("d-none");
 
         return;
     }
 
 
-    // Reset screen
+    // Reset
+
     error.classList.add("d-none");
+
     results.classList.add("d-none");
 
     loading.classList.remove("d-none");
@@ -43,12 +59,15 @@ async function analyzeStock() {
 
     try {
 
-        console.log("Analyzing stock:", symbol);
+        console.log(
+            "Analyzing stock:",
+            symbol
+        );
 
 
-        // ========================================
-        // Get Stock Information
-        // ========================================
+        // ====================================
+        // STOCK DATA
+        // ====================================
 
         const stockResponse =
             await fetch(
@@ -69,7 +88,10 @@ async function analyzeStock() {
             await stockResponse.json();
 
 
-        console.log("Stock data:", stockData);
+        console.log(
+            "Stock data:",
+            stockData
+        );
 
 
         if (stockData.status !== "success") {
@@ -82,9 +104,9 @@ async function analyzeStock() {
         }
 
 
-        // ========================================
-        // Get Multi-Period Analysis
-        // ========================================
+        // ====================================
+        // MULTI PERIOD ANALYSIS
+        // ====================================
 
         const analysisResponse =
             await fetch(
@@ -105,12 +127,6 @@ async function analyzeStock() {
             await analysisResponse.json();
 
 
-        console.log(
-            "Analysis data:",
-            analysisData
-        );
-
-
         if (analysisData.status !== "success") {
 
             throw new Error(
@@ -121,13 +137,53 @@ async function analyzeStock() {
         }
 
 
-        // ========================================
-        // Display Main Stock Information
-        // ========================================
+        // ====================================
+        // TECHNICAL ANALYSIS
+        // ====================================
+
+        const technicalResponse =
+            await fetch(
+                `${API}/technical/${encodeURIComponent(symbol)}`
+            );
+
+
+        if (!technicalResponse.ok) {
+
+            throw new Error(
+                `Technical API error: HTTP ${technicalResponse.status}`
+            );
+
+        }
+
+
+        const technicalData =
+            await technicalResponse.json();
+
+
+        console.log(
+            "Technical data:",
+            technicalData
+        );
+
+
+        if (technicalData.status !== "success") {
+
+            throw new Error(
+                technicalData.message ||
+                "Unable to fetch technical analysis."
+            );
+
+        }
+
+
+        // ====================================
+        // MAIN STOCK INFORMATION
+        // ====================================
 
         document.getElementById(
             "stockSymbol"
-        ).textContent = stockData.symbol;
+        ).textContent =
+            stockData.symbol;
 
 
         document.getElementById(
@@ -148,9 +204,9 @@ async function analyzeStock() {
         );
 
 
-        // ========================================
-        // Display Period Analysis
-        // ========================================
+        // ====================================
+        // PERFORMANCE
+        // ====================================
 
         const analysis =
             analysisData.analysis;
@@ -184,20 +240,35 @@ async function analyzeStock() {
         );
 
 
-        // ========================================
-// Show Results
-// ========================================
+        // ====================================
+        // TECHNICAL ANALYSIS
+        // ====================================
 
-results.classList.remove("d-none");
+        displayTechnicalAnalysis(
+            technicalData
+        );
 
-// Hide the main loading spinner
-loading.classList.add("d-none");
 
-// Load candlestick chart separately
-loadChart(symbol, "6mo");
+        // ====================================
+        // SHOW RESULTS
+        // ====================================
+
+        results.classList.remove("d-none");
+
+        loading.classList.add("d-none");
+
+
+        // ====================================
+        // LOAD CHART
+        // ====================================
+
+        loadChart(
+            symbol,
+            "6mo"
+        );
+
 
     }
-
 
     catch (err) {
 
@@ -215,14 +286,251 @@ loadChart(symbol, "6mo");
 
     }
 
-
     finally {
 
-    loading.classList.add("d-none");
+        loading.classList.add("d-none");
 
-    button.disabled = false;
+        button.disabled = false;
 
     }
+
+}
+
+
+
+// ========================================
+// Display Technical Analysis
+// ========================================
+
+function displayTechnicalAnalysis(
+    data
+) {
+
+    // ====================================
+    // Overall Signal
+    // ====================================
+
+    setTrend(
+        document.getElementById(
+            "technicalSignal"
+        ),
+        data.overall_signal
+    );
+
+
+    document.getElementById(
+        "technicalScore"
+    ).textContent =
+        data.technical_score;
+
+
+    // ====================================
+    // Moving Averages
+    // ====================================
+
+    const ma =
+        data.moving_averages;
+
+
+    document.getElementById(
+        "sma20"
+    ).textContent =
+        `₹${ma.sma_20.toFixed(2)}`;
+
+
+    document.getElementById(
+        "sma50"
+    ).textContent =
+        `₹${ma.sma_50.toFixed(2)}`;
+
+
+    document.getElementById(
+        "sma200"
+    ).textContent =
+        `₹${ma.sma_200.toFixed(2)}`;
+
+
+    document.getElementById(
+        "ema20"
+    ).textContent =
+        `₹${ma.ema_20.toFixed(2)}`;
+
+
+    document.getElementById(
+        "ema50"
+    ).textContent =
+        `₹${ma.ema_50.toFixed(2)}`;
+
+
+    setTrend(
+        document.getElementById(
+            "sma20Signal"
+        ),
+        ma.sma_20_signal
+    );
+
+
+    setTrend(
+        document.getElementById(
+            "sma50Signal"
+        ),
+        ma.sma_50_signal
+    );
+
+
+    setTrend(
+        document.getElementById(
+            "sma200Signal"
+        ),
+        ma.sma_200_signal
+    );
+
+
+    // ====================================
+    // RSI
+    // ====================================
+
+    const rsi =
+        data.rsi;
+
+
+    document.getElementById(
+        "rsiValue"
+    ).textContent =
+        rsi.value.toFixed(2);
+
+
+    setRSISignal(
+        document.getElementById(
+            "rsiSignal"
+        ),
+        rsi.signal
+    );
+
+
+    const rsiProgress =
+        document.getElementById(
+            "rsiProgress"
+        );
+
+
+    const rsiWidth =
+        Math.max(
+            0,
+            Math.min(
+                100,
+                rsi.value
+            )
+        );
+
+
+    rsiProgress.style.width =
+        `${rsiWidth}%`;
+
+
+    // ====================================
+    // MACD
+    // ====================================
+
+    const macd =
+        data.macd;
+
+
+    document.getElementById(
+        "macdValue"
+    ).textContent =
+        macd.macd.toFixed(2);
+
+
+    document.getElementById(
+        "macdSignalValue"
+    ).textContent =
+        macd.signal.toFixed(2);
+
+
+    document.getElementById(
+        "macdHistogram"
+    ).textContent =
+        macd.histogram.toFixed(2);
+
+
+    setTrend(
+        document.getElementById(
+            "macdTrend"
+        ),
+        macd.trend
+    );
+
+
+    // ====================================
+    // Support / Resistance
+    // ====================================
+
+    const levels =
+        data.levels;
+
+
+    document.getElementById(
+        "supportLevel"
+    ).textContent =
+        `₹${levels.support.toFixed(2)}`;
+
+
+    document.getElementById(
+        "resistanceLevel"
+    ).textContent =
+        `₹${levels.resistance.toFixed(2)}`;
+
+}
+
+
+
+// ========================================
+// RSI Signal Badge
+// ========================================
+
+function setRSISignal(
+    element,
+    signal
+) {
+
+    element.textContent =
+        signal;
+
+
+    element.classList.remove(
+        "bg-success",
+        "bg-danger",
+        "bg-warning",
+        "text-dark"
+    );
+
+
+    if (signal === "Overbought") {
+
+        element.classList.add(
+            "bg-danger"
+        );
+
+    }
+
+    else if (signal === "Oversold") {
+
+        element.classList.add(
+            "bg-success"
+        );
+
+    }
+
+    else {
+
+        element.classList.add(
+            "bg-warning",
+            "text-dark"
+        );
+
+    }
+
 }
 
 
@@ -241,15 +549,18 @@ function updatePeriod(
 
         document.getElementById(
             changeId
-        ).textContent = "--";
+        ).textContent =
+            "--";
 
 
         document.getElementById(
             trendId
-        ).textContent = "No Data";
+        ).textContent =
+            "No Data";
 
 
         return;
+
     }
 
 
@@ -264,7 +575,9 @@ function updatePeriod(
 
 
     setTrend(
-        document.getElementById(trendId),
+        document.getElementById(
+            trendId
+        ),
         data.trend
     );
 
@@ -273,7 +586,7 @@ function updatePeriod(
 
 
 // ========================================
-// Set Trend Badge
+// Trend Badge
 // ========================================
 
 function setTrend(
@@ -281,7 +594,8 @@ function setTrend(
     trend
 ) {
 
-    element.textContent = trend;
+    element.textContent =
+        trend;
 
 
     element.classList.remove(
@@ -322,7 +636,7 @@ function setTrend(
 
 
 // ========================================
-// Load Candlestick Chart
+// Candlestick Chart
 // ========================================
 
 async function loadChart(
@@ -347,8 +661,6 @@ async function loadChart(
     }
 
 
-    // Loading message
-
     chart.innerHTML = `
         <div class="text-center mt-5">
 
@@ -366,15 +678,6 @@ async function loadChart(
 
 
     try {
-
-        console.log(
-            `Loading chart for ${symbol} (${period})`
-        );
-
-
-        // ========================================
-        // Request Chart Data
-        // ========================================
 
         const response =
             await fetch(
@@ -395,12 +698,6 @@ async function loadChart(
             await response.json();
 
 
-        console.log(
-            "Chart data:",
-            result
-        );
-
-
         if (result.status !== "success") {
 
             throw new Error(
@@ -415,20 +712,26 @@ async function loadChart(
             result.data;
 
 
-        if (!data || data.length === 0) {
+        if (
+            !data ||
+            data.length === 0
+        ) {
 
             throw new Error(
                 "No chart data available."
             );
 
         }
-        // Clear the loading spinner before rendering the chart
-chart.innerHTML = "";
 
 
-        // ========================================
-        // Prepare Chart Data
-        // ========================================
+        // Clear loading spinner
+
+        chart.innerHTML = "";
+
+
+        // ====================================
+        // Chart Data
+        // ====================================
 
         const dates =
             data.map(
@@ -460,9 +763,9 @@ chart.innerHTML = "";
             );
 
 
-        // ========================================
-        // Candlestick Trace
-        // ========================================
+        // ====================================
+        // Candlestick
+        // ====================================
 
         const candlestick = {
 
@@ -481,62 +784,97 @@ chart.innerHTML = "";
             name: symbol,
 
             increasing: {
+
                 line: {
                     color: "#22c55e"
                 }
+
             },
 
             decreasing: {
+
                 line: {
                     color: "#ef4444"
                 }
+
             }
 
         };
 
 
-        // ========================================
+        // ====================================
         // Chart Layout
-        // ========================================
+        // ====================================
+
+        const periodNames = {
+
+            "1mo": "1 Month",
+
+            "3mo": "3 Months",
+
+            "6mo": "6 Months",
+
+            "1y": "1 Year"
+
+        };
+
 
         const layout = {
 
             title: {
-                text: `${symbol} - ${period} Price Chart`,
+
+                text:
+                    `${symbol} - ${periodNames[period]} Price Chart`,
+
                 font: {
                     color: "#f8fafc"
                 }
+
             },
 
-            paper_bgcolor: "#111827",
+            paper_bgcolor:
+                "#111827",
 
-            plot_bgcolor: "#111827",
+            plot_bgcolor:
+                "#111827",
 
             font: {
-                color: "#f8fafc"
+
+                color:
+                    "#f8fafc"
+
             },
 
             xaxis: {
 
-                title: "Date",
+                title:
+                    "Date",
 
                 rangeslider: {
-                    visible: false
+
+                    visible:
+                        false
+
                 },
 
-                gridcolor: "#1f2937",
+                gridcolor:
+                    "#1f2937",
 
-                zerolinecolor: "#1f2937"
+                zerolinecolor:
+                    "#1f2937"
 
             },
 
             yaxis: {
 
-                title: "Price (₹)",
+                title:
+                    "Price (₹)",
 
-                gridcolor: "#1f2937",
+                gridcolor:
+                    "#1f2937",
 
-                zerolinecolor: "#1f2937"
+                zerolinecolor:
+                    "#1f2937"
 
             },
 
@@ -552,43 +890,41 @@ chart.innerHTML = "";
 
             },
 
-            hovermode: "x unified"
+            hovermode:
+                "x unified"
 
         };
 
 
-        // ========================================
-        // Plotly Configuration
-        // ========================================
-
         const config = {
 
-            responsive: true,
+            responsive:
+                true,
 
-            displaylogo: false,
+            displaylogo:
+                false,
 
             modeBarButtonsToRemove: [
+
                 "lasso2d",
+
                 "select2d"
+
             ]
 
         };
 
 
-        // ========================================
-        // Render Chart
-        // ========================================
-
         await Plotly.newPlot(
+
             "stockChart",
+
             [candlestick],
+
             layout,
+
             config
-        );
 
-
-        console.log(
-            "Chart loaded successfully."
         );
 
     }
@@ -603,10 +939,14 @@ chart.innerHTML = "";
 
 
         chart.innerHTML = `
+
             <div class="alert alert-danger">
+
                 Unable to load chart:
                 ${error.message}
+
             </div>
+
         `;
 
     }
@@ -662,7 +1002,7 @@ if (chartPeriod) {
 
 
 // ========================================
-// Enter Key Support
+// Enter Key
 // ========================================
 
 const symbolInput =
@@ -677,7 +1017,9 @@ if (symbolInput) {
         "keydown",
         function (event) {
 
-            if (event.key === "Enter") {
+            if (
+                event.key === "Enter"
+            ) {
 
                 analyzeStock();
 
@@ -691,7 +1033,7 @@ if (symbolInput) {
 
 
 // ========================================
-// Console Startup Message
+// Startup
 // ========================================
 
 console.log(

@@ -219,3 +219,151 @@ hr {
     }
 
 }
+/* ========================================
+   Technical Analysis
+======================================== */
+
+.technical-section {
+    margin-top: 10px;
+}
+
+.technical-heading {
+    color: #f8fafc;
+    font-weight: 600;
+}
+
+.technical-score-box {
+    background: #0f172a;
+    border: 1px solid #263247;
+    border-radius: 12px;
+    padding: 16px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.technical-score {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #ffffff;
+}
+
+
+/* ========================================
+   Indicator Cards
+======================================== */
+
+.indicator-card {
+    background: #0f172a;
+    border: 1px solid #263247;
+    border-radius: 14px;
+    padding: 20px;
+    height: 100%;
+    transition: all 0.25s ease;
+}
+
+.indicator-card:hover {
+    transform: translateY(-4px);
+    border-color: #6366f1;
+}
+
+.indicator-label {
+    display: block;
+    color: #94a3b8;
+    font-size: 0.9rem;
+    margin-bottom: 10px;
+}
+
+.indicator-card h4 {
+    color: #ffffff;
+    font-weight: 700;
+    margin-bottom: 12px;
+}
+
+.indicator-card h5 {
+    color: #ffffff;
+    font-weight: 600;
+}
+
+.large-indicator {
+    min-height: 190px;
+}
+
+
+/* ========================================
+   RSI
+======================================== */
+
+.rsi-bar {
+    width: 100%;
+    height: 10px;
+    background: #1e293b;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.rsi-progress {
+    width: 0%;
+    height: 100%;
+    background: #6366f1;
+    border-radius: 10px;
+    transition: width 0.6s ease;
+}
+
+.rsi-labels {
+    color: #64748b;
+    font-size: 0.75rem;
+}
+
+
+/* ========================================
+   Support / Resistance
+======================================== */
+
+.level-card {
+    padding: 24px;
+    border-radius: 14px;
+    border: 1px solid #263247;
+}
+
+.level-card span {
+    color: #94a3b8;
+}
+
+.level-card h3 {
+    margin-top: 10px;
+    font-weight: 700;
+}
+
+.support-card {
+    background: #0d2019;
+}
+
+.support-card h3 {
+    color: #22c55e;
+}
+
+.resistance-card {
+    background: #241316;
+}
+
+.resistance-card h3 {
+    color: #ef4444;
+}
+
+
+/* ========================================
+   Responsive Technical Cards
+======================================== */
+
+@media (max-width: 768px) {
+
+    .technical-score-box {
+        margin-top: 15px;
+    }
+
+    .large-indicator {
+        min-height: auto;
+    }
+
+}

@@ -2,183 +2,816 @@
 <html lang="en">
 
 <head>
+
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0">
 
     <title>StockVision AI</title>
 
+    <!-- Bootstrap -->
     <link
         href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
         rel="stylesheet">
 
-        <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
-    <link rel="stylesheet" href="css/style.css">
+    <!-- Plotly -->
+    <script
+        src="https://cdn.plot.ly/plotly-2.35.2.min.js">
+    </script>
+
+    <!-- Custom CSS -->
+    <link
+        rel="stylesheet"
+        href="css/style.css">
+
 </head>
+
 
 <body>
 
-    <div class="container py-5">
-
-        <!-- Header -->
-        <div class="text-center mb-5">
-            <h1 class="display-4 fw-bold">📈 StockVision AI</h1>
-            <p class="subtitle">
-                AI-powered stock analysis dashboard
-            </p>
-        </div>
+<div class="container py-5">
 
 
-        <!-- Search Section -->
-        <div class="card shadow-lg search-card p-4 mb-4">
+    <!-- =====================================
+         HEADER
+    ====================================== -->
 
-            <h4 class="mb-3">🔎 Analyze a Stock</h4>
+    <div class="text-center mb-5">
 
-            <div class="row g-3">
+        <h1 class="display-4 fw-bold">
+            📈 StockVision AI
+        </h1>
 
-                <div class="col-md-9">
-                    <input
-                        type="text"
-                        id="symbolInput"
-                        class="form-control form-control-lg"
-                        placeholder="Enter stock symbol e.g. RELIANCE.NS"
-                        value="RELIANCE.NS">
-                </div>
-
-                <div class="col-md-3">
-                    <button
-                        id="analyzeButton"
-                        class="btn btn-primary btn-lg w-100"
-                        onclick="analyzeStock()">
-                        Analyze
-                    </button>
-                </div>
-
-            </div>
-
-            <small class="text-secondary mt-3 d-block">
-                Indian stocks usually use the <strong>.NS</strong> suffix.
-                Example: RELIANCE.NS, TCS.NS, INFY.NS
-            </small>
-
-        </div>
-
-
-        <!-- Loading -->
-        <div id="loading" class="text-center my-4 d-none">
-            <div class="spinner-border" role="status"></div>
-            <p class="mt-2">Fetching stock data...</p>
-        </div>
-
-
-        <!-- Error -->
-        <div id="error" class="alert alert-danger d-none"></div>
-
-
-        <!-- Results -->
-        <div id="results" class="d-none">
-
-            <!-- Current Stock -->
-            <div class="card shadow-lg p-4 mb-4">
-
-                <div class="d-flex justify-content-between align-items-center flex-wrap">
-
-                    <div>
-                        <p class="text-secondary mb-1">Stock</p>
-                        <h2 id="stockSymbol">--</h2>
-                    </div>
-
-                    <div class="text-end">
-                        <p class="text-secondary mb-1">Current Price</p>
-                        <h2 id="currentPrice">₹--</h2>
-                    </div>
-
-                </div>
-
-                <hr>
-
-                <div class="d-flex justify-content-between align-items-center">
-
-                    <span>1-Year Performance</span>
-
-                    <span id="overallChange" class="fs-4 fw-bold">
-                        --
-                    </span>
-
-                </div>
-
-                <div class="mt-3">
-                    <span class="text-secondary">Overall Trend:</span>
-                    <span id="overallTrend" class="badge fs-6 ms-2">
-                        --
-                    </span>
-                </div>
-
-            </div>
-
-<!-- Candlestick Chart -->
-<div class="card shadow-lg p-4 mb-4">
-
-    <div class="d-flex justify-content-between align-items-center flex-wrap mb-3">
-
-        <div>
-            <h3 class="mb-1">📈 Price Chart</h3>
-            <p class="text-secondary mb-0">
-                Interactive candlestick chart
-            </p>
-        </div>
-
-        <select id="chartPeriod" class="form-select" style="width: 150px;">
-            <option value="1mo">1 Month</option>
-            <option value="3mo">3 Months</option>
-            <option value="6mo" selected>6 Months</option>
-            <option value="1y">1 Year</option>
-        </select>
+        <p class="subtitle">
+            AI-powered stock analysis dashboard
+        </p>
 
     </div>
 
-    <div id="stockChart" style="width: 100%; height: 500px;"></div>
 
-</div>
 
-            <!-- Performance -->
-            <h3 class="mb-3">📊 Performance Analysis</h3>
+    <!-- =====================================
+         SEARCH
+    ====================================== -->
+
+    <div class="card shadow-lg search-card p-4 mb-4">
+
+        <h4 class="mb-3">
+            🔎 Analyze a Stock
+        </h4>
+
+
+        <div class="row g-3">
+
+            <div class="col-md-9">
+
+                <input
+                    type="text"
+                    id="symbolInput"
+                    class="form-control form-control-lg"
+                    placeholder="Enter stock symbol e.g. RELIANCE.NS"
+                    value="RELIANCE.NS">
+
+            </div>
+
+
+            <div class="col-md-3">
+
+                <button
+                    id="analyzeButton"
+                    class="btn btn-primary btn-lg w-100"
+                    onclick="analyzeStock()">
+
+                    Analyze
+
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <small class="text-secondary mt-3 d-block">
+
+            Indian stocks usually use the
+            <strong>.NS</strong> suffix.
+
+            Example:
+            RELIANCE.NS, TCS.NS, INFY.NS
+
+        </small>
+
+    </div>
+
+
+
+    <!-- =====================================
+         LOADING
+    ====================================== -->
+
+    <div
+        id="loading"
+        class="text-center my-4 d-none">
+
+        <div
+            class="spinner-border"
+            role="status">
+        </div>
+
+        <p class="mt-2">
+            Fetching stock data...
+        </p>
+
+    </div>
+
+
+
+    <!-- =====================================
+         ERROR
+    ====================================== -->
+
+    <div
+        id="error"
+        class="alert alert-danger d-none">
+    </div>
+
+
+
+    <!-- =====================================
+         RESULTS
+    ====================================== -->
+
+    <div id="results" class="d-none">
+
+
+        <!-- =================================
+             STOCK SUMMARY
+        ================================== -->
+
+        <div class="card shadow-lg p-4 mb-4">
+
+            <div
+                class="d-flex justify-content-between align-items-center flex-wrap">
+
+
+                <div>
+
+                    <p class="text-secondary mb-1">
+                        Stock
+                    </p>
+
+                    <h2 id="stockSymbol">
+                        --
+                    </h2>
+
+                </div>
+
+
+                <div class="text-end">
+
+                    <p class="text-secondary mb-1">
+                        Current Price
+                    </p>
+
+                    <h2 id="currentPrice">
+                        ₹--
+                    </h2>
+
+                </div>
+
+            </div>
+
+
+            <hr>
+
+
+            <div
+                class="d-flex justify-content-between align-items-center">
+
+                <span>
+                    1-Year Performance
+                </span>
+
+                <span
+                    id="overallChange"
+                    class="fs-4 fw-bold">
+
+                    --
+
+                </span>
+
+            </div>
+
+
+            <div class="mt-3">
+
+                <span class="text-secondary">
+                    Overall Trend:
+                </span>
+
+                <span
+                    id="overallTrend"
+                    class="badge fs-6 ms-2">
+
+                    --
+
+                </span>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- =================================
+             PRICE CHART
+        ================================== -->
+
+        <div class="card shadow-lg p-4 mb-4">
+
+            <div
+                class="d-flex justify-content-between align-items-center flex-wrap mb-3">
+
+
+                <div>
+
+                    <h3 class="mb-1">
+                        📈 Price Chart
+                    </h3>
+
+                    <p class="text-secondary mb-0">
+                        Interactive candlestick chart
+                    </p>
+
+                </div>
+
+
+                <select
+                    id="chartPeriod"
+                    class="form-select"
+                    style="width: 150px;">
+
+                    <option value="1mo">
+                        1 Month
+                    </option>
+
+                    <option value="3mo">
+                        3 Months
+                    </option>
+
+                    <option
+                        value="6mo"
+                        selected>
+
+                        6 Months
+
+                    </option>
+
+                    <option value="1y">
+                        1 Year
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <div
+                id="stockChart"
+                style="width:100%; height:500px;">
+            </div>
+
+        </div>
+
+
+
+        <!-- =================================
+             TECHNICAL ANALYSIS
+        ================================== -->
+
+        <div
+            class="card shadow-lg p-4 mb-4 technical-section">
+
+
+            <!-- Technical Header -->
+
+            <div
+                class="d-flex justify-content-between align-items-center flex-wrap mb-4">
+
+
+                <div>
+
+                    <h3 class="mb-1">
+                        📊 Technical Analysis
+                    </h3>
+
+                    <p class="text-secondary mb-0">
+                        Indicators calculated from historical price data
+                    </p>
+
+                </div>
+
+
+                <div>
+
+                    <span class="text-secondary me-2">
+                        Overall Signal
+                    </span>
+
+                    <span
+                        id="technicalSignal"
+                        class="badge fs-6">
+
+                        --
+
+                    </span>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- Technical Score -->
+
+            <div class="technical-score-box mb-4">
+
+                <span class="text-secondary">
+                    Technical Score
+                </span>
+
+                <span
+                    id="technicalScore"
+                    class="technical-score">
+
+                    --
+
+                </span>
+
+            </div>
+
+
+
+            <!-- Moving Averages -->
+
+            <h4 class="technical-heading mb-3">
+                📐 Moving Averages
+            </h4>
+
+
+            <div class="row g-4 mb-5">
+
+
+                <!-- SMA 20 -->
+
+                <div class="col-md-6 col-lg">
+
+                    <div class="indicator-card">
+
+                        <span class="indicator-label">
+                            SMA 20
+                        </span>
+
+                        <h4 id="sma20">
+                            ₹--
+                        </h4>
+
+                        <span
+                            id="sma20Signal"
+                            class="badge">
+
+                            --
+
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <!-- SMA 50 -->
+
+                <div class="col-md-6 col-lg">
+
+                    <div class="indicator-card">
+
+                        <span class="indicator-label">
+                            SMA 50
+                        </span>
+
+                        <h4 id="sma50">
+                            ₹--
+                        </h4>
+
+                        <span
+                            id="sma50Signal"
+                            class="badge">
+
+                            --
+
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <!-- SMA 200 -->
+
+                <div class="col-md-6 col-lg">
+
+                    <div class="indicator-card">
+
+                        <span class="indicator-label">
+                            SMA 200
+                        </span>
+
+                        <h4 id="sma200">
+                            ₹--
+                        </h4>
+
+                        <span
+                            id="sma200Signal"
+                            class="badge">
+
+                            --
+
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <!-- EMA 20 -->
+
+                <div class="col-md-6 col-lg">
+
+                    <div class="indicator-card">
+
+                        <span class="indicator-label">
+                            EMA 20
+                        </span>
+
+                        <h4 id="ema20">
+                            ₹--
+                        </h4>
+
+                    </div>
+
+                </div>
+
+
+                <!-- EMA 50 -->
+
+                <div class="col-md-6 col-lg">
+
+                    <div class="indicator-card">
+
+                        <span class="indicator-label">
+                            EMA 50
+                        </span>
+
+                        <h4 id="ema50">
+                            ₹--
+                        </h4>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- Momentum -->
+
+            <h4 class="technical-heading mb-3">
+                ⚡ Momentum Indicators
+            </h4>
+
+
+            <div class="row g-4 mb-5">
+
+
+                <!-- RSI -->
+
+                <div class="col-md-6">
+
+                    <div class="indicator-card large-indicator">
+
+                        <div
+                            class="d-flex justify-content-between align-items-center">
+
+                            <div>
+
+                                <span class="indicator-label">
+                                    RSI (14)
+                                </span>
+
+                                <h3 id="rsiValue">
+                                    --
+                                </h3>
+
+                            </div>
+
+
+                            <span
+                                id="rsiSignal"
+                                class="badge">
+
+                                --
+
+                            </span>
+
+                        </div>
+
+
+                        <div class="rsi-bar mt-4">
+
+                            <div
+                                id="rsiProgress"
+                                class="rsi-progress">
+                            </div>
+
+                        </div>
+
+
+                        <div
+                            class="d-flex justify-content-between mt-2 rsi-labels">
+
+                            <span>
+                                Oversold
+                            </span>
+
+                            <span>
+                                Neutral
+                            </span>
+
+                            <span>
+                                Overbought
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- MACD -->
+
+                <div class="col-md-6">
+
+                    <div class="indicator-card large-indicator">
+
+                        <span class="indicator-label">
+                            MACD
+                        </span>
+
+
+                        <div class="row mt-3">
+
+
+                            <div class="col-4">
+
+                                <small class="text-secondary">
+                                    MACD
+                                </small>
+
+                                <h5 id="macdValue">
+                                    --
+                                </h5>
+
+                            </div>
+
+
+                            <div class="col-4">
+
+                                <small class="text-secondary">
+                                    Signal
+                                </small>
+
+                                <h5 id="macdSignalValue">
+                                    --
+                                </h5>
+
+                            </div>
+
+
+                            <div class="col-4">
+
+                                <small class="text-secondary">
+                                    Histogram
+                                </small>
+
+                                <h5 id="macdHistogram">
+                                    --
+                                </h5>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="mt-3">
+
+                            <span class="text-secondary">
+                                MACD Trend:
+                            </span>
+
+                            <span
+                                id="macdTrend"
+                                class="badge ms-2">
+
+                                --
+
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- Support Resistance -->
+
+            <h4 class="technical-heading mb-3">
+                🎯 Support & Resistance
+            </h4>
+
 
             <div class="row g-4">
 
-                <!-- 1 Month -->
-                <div class="col-md-6 col-lg-3">
-                    <div class="card shadow period-card h-100 p-4">
-                        <h5>1 Month</h5>
-                        <h3 id="change1m">--</h3>
-                        <span id="trend1m" class="badge mt-2">--</span>
+
+                <div class="col-md-6">
+
+                    <div class="level-card support-card">
+
+                        <span>
+                            Support
+                        </span>
+
+                        <h3 id="supportLevel">
+                            ₹--
+                        </h3>
+
                     </div>
+
                 </div>
 
-                <!-- 3 Months -->
-                <div class="col-md-6 col-lg-3">
-                    <div class="card shadow period-card h-100 p-4">
-                        <h5>3 Months</h5>
-                        <h3 id="change3m">--</h3>
-                        <span id="trend3m" class="badge mt-2">--</span>
+
+                <div class="col-md-6">
+
+                    <div class="level-card resistance-card">
+
+                        <span>
+                            Resistance
+                        </span>
+
+                        <h3 id="resistanceLevel">
+                            ₹--
+                        </h3>
+
                     </div>
+
                 </div>
 
-                <!-- 6 Months -->
-                <div class="col-md-6 col-lg-3">
-                    <div class="card shadow period-card h-100 p-4">
-                        <h5>6 Months</h5>
-                        <h3 id="change6m">--</h3>
-                        <span id="trend6m" class="badge mt-2">--</span>
-                    </div>
+            </div>
+
+        </div>
+
+
+
+        <!-- =================================
+             PERFORMANCE ANALYSIS
+        ================================== -->
+
+        <h3 class="mb-3">
+            📊 Performance Analysis
+        </h3>
+
+
+        <div class="row g-4">
+
+
+            <!-- 1 Month -->
+
+            <div class="col-md-6 col-lg-3">
+
+                <div
+                    class="card shadow period-card h-100 p-4">
+
+                    <h5>
+                        1 Month
+                    </h5>
+
+                    <h3 id="change1m">
+                        --
+                    </h3>
+
+                    <span
+                        id="trend1m"
+                        class="badge mt-2">
+
+                        --
+
+                    </span>
+
                 </div>
 
-                <!-- 1 Year -->
-                <div class="col-md-6 col-lg-3">
-                    <div class="card shadow period-card h-100 p-4">
-                        <h5>1 Year</h5>
-                        <h3 id="change1y">--</h3>
-                        <span id="trend1y" class="badge mt-2">--</span>
-                    </div>
+            </div>
+
+
+
+            <!-- 3 Months -->
+
+            <div class="col-md-6 col-lg-3">
+
+                <div
+                    class="card shadow period-card h-100 p-4">
+
+                    <h5>
+                        3 Months
+                    </h5>
+
+                    <h3 id="change3m">
+                        --
+                    </h3>
+
+                    <span
+                        id="trend3m"
+                        class="badge mt-2">
+
+                        --
+
+                    </span>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- 6 Months -->
+
+            <div class="col-md-6 col-lg-3">
+
+                <div
+                    class="card shadow period-card h-100 p-4">
+
+                    <h5>
+                        6 Months
+                    </h5>
+
+                    <h3 id="change6m">
+                        --
+                    </h3>
+
+                    <span
+                        id="trend6m"
+                        class="badge mt-2">
+
+                        --
+
+                    </span>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- 1 Year -->
+
+            <div class="col-md-6 col-lg-3">
+
+                <div
+                    class="card shadow period-card h-100 p-4">
+
+                    <h5>
+                        1 Year
+                    </h5>
+
+                    <h3 id="change1y">
+                        --
+                    </h3>
+
+                    <span
+                        id="trend1y"
+                        class="badge mt-2">
+
+                        --
+
+                    </span>
+
                 </div>
 
             </div>
@@ -187,8 +820,12 @@
 
     </div>
 
+</div>
 
-    <script src="js/app.js"></script>
+
+<!-- JavaScript -->
+
+<script src="js/app.js"></script>
 
 </body>
 
